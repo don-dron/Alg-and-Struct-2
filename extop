@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int **func(char *S,int size){
+    int i,j;
+    int **d=calloc(size,sizeof(int*));
+    int len=strlen(S);
+    for (i=0;i<strlen(S);i++){
+        d[i]=calloc(size,sizeof(int));
+    }
+    for (i=0;i<len;i++){
+        for (j=0;j<size;j++){
+            d[i][j]=len;
+        }
+        for(j=0;j<len-i;j++){
+            d[i][S[j]] = len-1-j;
+        }
+    }
+    return d;
+}
+
+int string(char *S, char *p, int size){
+    int **d=func(S,size);
+    int x=strlen(S);
+    int z=strlen(p);
+    int i,k;
+    k=x-1;
+    while(k<z){
+        for (i=x-1;p[k]==S[i];i--){
+            if (!i){
+                for (i=0;i<x;i++){
+                    free(d[i]);
+                }
+                free(d);
+                return k;
+            }
+            k--;
+        }
+        k=k+d[x-1-i][p[k]];
+    }
+    for(i=0;i<x;i++){
+        free(d[i]);
+    }
+    free(d);
+    return z;
+}
+
+int main(int argc, char **argv){
+	printf("%d\n", string(argv[1], argv[2], 355));
+	return 0;
+}
