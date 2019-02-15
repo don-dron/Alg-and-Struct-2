@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h> 
+
+int compare(const void *a, const void *b){
+        int i;
+        int v=0;
+        int u=0;
+	char *R =(char*)a;
+	char *L =(char*)b;
+	for(i=0;R[i]!=0;i++){
+		if (R[i]==97){
+			v++;
+		}
+	}
+	for(i=0;L[i]!=0;i++){
+		if (L[i]==97){
+			u++;
+		}
+	}
+	if (v==u){
+		return 0;
+	}
+        if(v<u){
+                return -1;
+        }
+        else {
+                return 1;
+        }
+}
+
+void swap(void *a, void *b, int dlin){
+        int i;
+	char s[dlin];
+	char *x=a;
+        char *y=b;
+	for(i=0;i<dlin;i++) {
+		s[i]=x[i];
+		x[i]=y[i];
+		y[i]=s[i];
+	}
+}
+void fly(void *stc, int i, int n, int dlin){
+	for(;;) {
+		int l=2*i+1;
+                int r=2*i+2;
+                int j=i;
+		if (l<n && compare(stc+i*dlin,stc+l*dlin)==-1){
+			i=l;
+		}
+		if (r<n && compare(stc+i*dlin,stc+r*dlin)==-1){
+			i=r;
+		}
+		if (i==j){
+			break;
+		}
+		swap(stc+i*dlin,stc+j*dlin,dlin);
+	}
+}
+void construction(void *stc, int n, int dlin){
+	int i=n/2-1;
+	while(i>=0) {
+		fly(stc,i,n,dlin);
+		i--;
+	}
+}
+void hsort(void *stc, int nel,int dlin,int (*compare)(const void *a, const void *b)) {
+	construction(stc,nel,dlin);
+	int i=nel-1;
+	while (i >0) {
+		swap(stc,stc+i*dlin,dlin);
+		fly(stc,0,i,dlin);
+		i--;
+	}
+}
+int main(int argc, char **argv){
+	int n,i;
+	scanf("%d", &n);
+	char stc[n][100];
+	for(i=0;i<n;i++){
+		scanf("%s", stc[i]);
+	}
+	hsort(stc,n,100,compare);
+	for(i=0;i<n;i++){
+		printf("%s\n", stc[i]);
+	}
+        return 0;
+}
