@@ -1,0 +1,99 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int compare(int a,int b, char *s){
+    int x;
+    int y;
+    x=a;
+    y=b;
+    for(;;){
+        if((s[x]==s[y] && s[x]==32) || (0==s[y] && s[x]==32) || (32==s[y] && s[x]==0) || (s[x]==s[y] && s[x]==32)){
+            if(x>y)return 1;
+            else return -1;
+        }
+        if(s[x]==32 || s[x]==0)return -1;
+        if(s[y]==32 || s[y]==0)return 1;
+        x++;
+        y++;
+    }
+}
+void csort(int n, int *p,char *src,char *dest){
+    int *count=malloc(sizeof(int)*n);
+    for(int i=0;i<n;i++)count[i]=0;
+    int j=0;
+    int i=0;
+    while(j < n-1){
+        i=j+1;
+        while(i<n){
+            if(compare(p[i],p[j],src)==1){
+                count[j]++;
+            }
+            else{
+                count[i]++;
+            }
+            i++;
+        }
+        j++;
+    }
+    int w=0;
+    int h=-1;
+    int *t=malloc(sizeof(int)*n);
+    for (int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(count[j]>h){
+                    h=count[j];
+                    w=j;
+                }
+            }
+            count[w]=-1;
+            h=-1;
+            t[i]=p[w];
+    }
+    w=0;
+    for(int i=0;i<n;i++){
+        int j=t[i];
+        if(i!=0){
+            dest[w]=32;
+            w++;
+        }
+        while(src[j]!=32 && src[j]!=0){
+            dest[w]=src[j];
+            j++;
+            w++;
+        }
+    }
+    dest[w]=0;
+    free(t);
+    free(count);
+}
+
+
+
+int main(int argc, char **argv){
+    int n,i,j;
+    int k=0;
+    char *d=malloc(1000000);
+    char *s=malloc(1000000);
+    gets(s);
+    int *a=malloc(sizeof(int)*100000);
+    j=0;
+    i=1;
+    while(s[j]==32)j++;
+    a[0]=j;
+    j++;
+    while (s[j]!=0){
+        if(j!=0 && s[j-1]==32 && s[j]!=32){
+            a[i]=j;
+            i++;
+        }
+        j++;
+    }
+    n=i;
+    csort(n,a,s,d);
+    printf("%s ", d);
+    free(d);
+    free(a);
+    free(s);
+    return 0;
+}
