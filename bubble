@@ -1,0 +1,28 @@
+
+void bubblesort(unsigned long nel, int (*compare)(unsigned long i, unsigned long j),void (*swap)(unsigned long i, unsigned long j)) {
+        int f,left,right;
+        f=0;
+        left=0;
+        right=nel-2;
+        if(nel==2){
+            if (compare(0,1)==1)
+                swap(0,1);
+            return;
+        }
+        while(left<=right) {
+            for(int i=left;i<right+1;i++) {
+                if(compare(i,i+1)>0) {
+                    f=i;
+                    swap(i,i+1);
+                }
+            }
+            right=f-1;
+            for(int i=right;i>left-1;i--) {
+                if(compare(i,i+1)>0) {
+                    f=i;
+                    swap(i+1,i);
+                }
+            }
+            left=f+1;
+        }
+} 
