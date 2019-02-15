@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int peak(int a, int b, int *q, int k){
+        if(k==1){
+		return 1;
+	}
+	int i=0;
+	int c=0;
+        if(a==0 && q[a+1]<=q[a]) {
+        	c++;
+	}
+        if(b==k-1 &&  q[b]>=q[b-1]){
+                c++;
+        }
+        i=a;
+	while(i<=b){
+		if(i!=0 && i!=k-1 && q[i-1]<=q[i] && q[i+1]<=q[i]) {
+			c++;
+		}
+                i++;
+	}
+	return c;
+}
+int tree(int *q,int l,int r,int i,int a,int b){
+    int m=0;
+	if(l==a && b==r){
+		return q[i];
+	}
+	else{
+		m=(a+b)/2;
+		if(r<=m){
+			return tree(q,l,r,(2*i+1),a,m);
+		}
+		else{
+			if(l>m){
+				return tree(q,l,r,(2*i+2),m+1,b);
+			}
+			else{
+				return (tree(q,m+1,r,2*i+2,m+1,b)+tree(q,l,m,(2*i+1),a,m));
+			}
+		}
+	}
+}
+void build(int *q,int i,int a,int b,int *r,int k){
+	int m=0;
+	if(a==b){
+		r[i]=peak(a,b,q,k);
+	}
+	else{
+		m=(a+b)/2;
+		build(q,(2*i+1),a,m,r,k);
+		build(q,2*i+2,m+1,b,r,k);
+		r[i]=peak(a,b,q,k);
+	}
+}
+void update(int j, int i, int a, int b, int *r, int *q, int k){
+	int m=0;
+	if(a==b){
+		r[i]=peak(j,j,q,k);
+	}
+	else{
+		m=(a+b)/2;
+		if(j <= m){
+			update(j,2*i+1,a,m,r,q,k);
+		}
+		else{
+			update(j,2*i+2,m+1,b,r,q,k);
+		}
+		r[i]=r[2*i+1]+r[2*i+2];
+	}
+}
+void up(int j, int n, int * r, int * q){
+	update(j,0,0,n-1,r,q,n);
+	if (j > 0){
+		update(j-1,0,0,n-1,r,q,n);
+	}
+    if (j<n-1){
+		update(j+1,0,0,n-1,r,q,n);
+	}
+}
+int main(){
+    int k;
+	scanf("%d", &k);
+	int *q=malloc(k*4);
+	int *r=malloc(k*16);
+	int i=0;
+	for(i=0;i<k;i++){
+		scanf("%d", &q[i]);
+	}
+	int z=0;
+	scanf("%d", &z);
+	char can[10];
+	int x=0;
+	int y=0;
+	build(q,0,0,k-1,r,k);
+	for(i=0;i<z;i++){
+		scanf("%s%d%d", can, &x, &y);
+		if(strcmp(can,"PEAK")==0){
+			printf("%d \n", tree(r,x,y,0,0,(k-1)));
+		}
+		else{
+			q[x] = y;
+			up(x, k, r, q);
+		}
+	}
+	free(q);
+	free(r);
+	return 0;
+}
