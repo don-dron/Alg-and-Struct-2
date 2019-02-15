@@ -1,0 +1,70 @@
+#include "stdio.h"
+#include "stdlib.h"
+int max(int a,int b){
+    if(a<b)return b;
+    return a;
+}
+int min(int a, int b){
+    if(a>b)return b;
+    return a;
+}
+int sum (int v, int f, int g, int l, int r, int *t) {
+        if(l>r)
+		return -2147483648;
+	if(l==f && r==g)
+		return t[v];
+	int m=(f+g)/2;
+	return max(sum(v*2,f,m,l, min(r,m),t), sum(v*2+1,m+1,g,max(l,m+1),r,t));
+}
+void build (int k,int *g, int *t, int l , int r){
+    int m;
+    if(l==r){
+        t[k]=g[l];
+    }
+    else{
+        m=(r+l)/2;
+        build(k*2,g,t,l,m);
+        build(k*2+1,g,t,m+1,r);
+        t[k]=max(t[k*2],t[k*2+1]);
+    }
+}
+void update(int k, int f, int g, int l ,int r , int *t){
+    if(f==g && g==l){
+        t[k]=r;
+    }
+    else{
+        int m=(f+g)/2;
+        if(m>=l){
+            update(k*2,f,m,l,r,t);
+        }
+        else {
+            update(k*2+1,m+1,g,l,r,t);
+        }
+        t[k]=max(t[k*2+1],t[2*k]);
+    }
+}
+int main (){
+    int n;
+    scanf("%d", &n);
+    int *a=(int*)malloc(sizeof(int)*n);
+    for (int i=0;i<n;i++){
+        scanf("%d", &a[i]);
+    }
+    int z;
+    scanf("%d ", &z);
+    int *t=(int*)malloc(sizeof(int)*4*n);
+    build(1,a,t,0,n-1);
+    for (int i=0;i<z;i++){
+        char c[10];
+        int m,k;
+        scanf("%s %d %d", &c,&m,&k);
+        if(c[0]=='M'){
+            int y=sum(1,0,n-1,m,k,t);
+            printf("%d\n", y);
+        }
+        else update(1,0,n-1,m,k,t);
+    }
+    free(t);
+    free(a);
+    return 0;
+}
