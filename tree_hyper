@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
+int query(int *T, int i){
+    int v=0;
+    while(i>=0){
+        v=v^T[i];
+        i=(i&(i+1))-1;
+    }
+    return v;
+}
+int fenwik(int *T, int l , int r){
+    return query(T,r)^query(T,l-1);
+}
+void update (int i, int d , int *T, int n){
+    while(i<n){
+        T[i]=T[i]^d;
+        i=i|(i+1);
+    }
+}
+int min(int a, int b){
+    if(a<b)return a;
+    return b;
+}
+int build(char *hd, int l, int r,int *T, int n){
+    int sum=0;
+    int m;
+    int bound=min(r,n);
+    while(l<bound){
+        m=(l+r)/2;
+        sum=sum^build(hd,l,m,T,n);
+        l=m+1;
+    }
+    if(r<n){
+        sum=sum^(1 << (hd[r] - 97));
+        T[r]=sum;
+    }
+    return sum;
+}
+int u(int x){
+    x--;
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    return x+1;
+
+}
+int tok(int x){
+    if((x&(x-1))==0)return 1;
+    return 0;
+}
+
+
+int main() {
+        char *s= malloc(sizeof(char)*2000000);
+        gets(s);
+        int n=strlen(s);
+        int *T=malloc(sizeof(int)*n);
+        int g;
+        g=u(n);
+        build(s,0,g-1,T,n);
+        int k;
+        scanf("%d ", &k);
+        while(k!=0){
+            char c[4];
+            scanf("%s ", c);
+            if(c[0]=='H'){
+                int x,y;
+                scanf("%d %d", &x ,&y);
+                if(tok(fenwik(T,x,y))==1)printf("YES\n");
+                else printf("NO\n");
+            }
+            else{
+              int delta=0;
+              int P;
+              char * stro=(char*)malloc(1000001*sizeof(char));
+              scanf("%d ",&P);
+              gets(stro);
+              int len=strlen(stro);
+              delta=delta^(1<<(s[P]-97));
+              for (int i=0;i<len;i++) {
+                delta=(1<<(stro[i]-97))^(1<<(s[P]-97));
+                update(P,delta,T,n);
+                s[P]=stro[i];
+                P++;
+              }
+              free(stro);
+            }
+            k--;
+        }
+        free (s);
+        free(T);
+
+        return 0;
+}
