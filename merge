@@ -1,0 +1,69 @@
+#include <stdio.h>
+void insertionSort(int n, int *s){
+    int w,l;
+    for (int i=1;i<n;i++){
+        w=s[i];
+        l=i-1;
+        while(l>= 0 && abs(s[l])>abs(w)){
+            s[l+1]=s[l];
+            l=l-1;
+        }
+        s[l+1]=w;
+    }
+}
+void mergesort(int num, int *a){
+    int r,q,i,j,m;
+    int b[num];
+    for (int k=1;k<num;k=k*2){
+        for (int l=0;l+k<num; l=l+k*2){
+            r=l+k;
+            q=r+k;
+            if (q>num)q=num;
+            m=l;
+            i=l;
+            j=r; 
+            while (i<r && j<q){
+                if (abs(a[i])<=abs(a[j])){
+                    b[m]=a[i]; 
+                    i++;
+                }
+                else{
+                    b[m]=a[j];
+                    j++;
+                }
+                m++;
+            }
+            while(i<r){
+                b[m]=a[i];
+                i++;
+                m++;
+            }
+            while(j<q){
+                b[m]=a[j];
+                j++;
+                m++;
+            }
+            for (m=l;m<q;m++){
+                a[m]=b[m];
+            }
+        }
+    }
+}
+int main(){
+    int n;
+    scanf("%d", &n);
+    int* s;
+    s=(int*)malloc(n*sizeof(int));
+    for(int i=0;i<n;i++)
+        scanf("%d", &s[i]);
+    if(n<=5){
+        insertionSort(n, s);
+    }
+    else{
+        mergesort(n, s);
+    }
+    for (int i=0;i<n;i++)
+        printf("%d ",s[i]);
+    free(s);
+    return 0;
+}
