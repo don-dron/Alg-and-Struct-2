@@ -1,0 +1,54 @@
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+int nod(int a, int b){
+    while (a!=0 && b!=0)
+        if (a>=b)
+           a=a-b;
+        else
+           b=b-a;
+    return a | b;
+}
+int main(int argc, char* argv[]){
+    int n;
+    int k;
+    char c[1000];
+    //gets(c);
+    strcpy(c,argv[1]);
+    n=strlen(c);
+    int a[n];
+    a[0]=0;
+    int t;
+    for(int i=1;i<n;i++){
+        int j=a[i-1];
+        while(j>0 && c[i]!=c[j]){
+            j=a[j-1];
+        }
+        if(c[i]==c[j]){
+                ++j;
+        }
+        a[i]=j;
+    }
+    /*
+            for(k=0;k+j<=i;k++)
+			if(c[k]!=c[k+j])
+				t=0;
+    */
+    int j=0;
+    for(int i=1;i<n;i++) {
+        	if(a[i]!=0){
+		        j=nod(a[i], i+1);
+		}
+		t=1;
+		for(k=0;k+j<=i;k++){
+			if(c[k]!=c[k+j]){
+				t=0;
+			}
+		}
+
+		if(t==1&&j!=0){
+			printf("%d %d\n",i+1,(i+1)/j);
+                }
+    }
+    return 0;
+}
