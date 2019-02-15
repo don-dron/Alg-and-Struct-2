@@ -1,0 +1,63 @@
+#include<stdio.h>
+
+void selectionsort(int *a, int l, int r){
+    int d,k;
+    for(int i=l;i<r;i++){
+        d=a[i]; 
+        k=i;
+        for(int j=i;j<r;j++){
+             if(a[j]<d){
+                d=a[j];
+                k=j;
+             }
+        }
+        int t=a[k];
+        a[k]=a[i];
+        a[i]=t;
+    }
+}
+
+int patrition(int *a, int left, int right){
+    int point=a[right];
+    int i=left;
+    for(int j=left;j<right;j++){
+        if(a[j]<=point){
+            int t=a[i];
+            a[i]=a[j];
+            a[j]=a[i];
+            i=i+1;
+        }
+    }
+    int t=a[i];
+    a[i]=a[right];
+    a[right]=a[i];
+    return i;
+}
+void quicksort(int *a, int left, int right, int k){
+    if(k<=right-left){
+        selectionsort(a,left,right);
+    }
+    else if(left<right){
+            if(patrition(a,left,right)-left<right-patrition(a,left,right)){
+                quicksort(a,patrition(a,left,right)-1,right,k);
+                left=patrition(a,left,right)+1;
+            }
+            else{
+                quicksort(a,left,patrition(a,left,right)+1,k);
+                right=patrition(a,left,right)-1;
+            }
+    }
+}
+int main(){
+    int n;
+    scanf("%d ", &n);
+    int m;
+    scanf("%d ", &m);
+    int a[n];
+    for ( int i = 0 ; i < n; i++ )
+        scanf("%d", &a[i]);
+    quicksort(a,0,n,m);
+    for ( int i = 0 ; i < n; i++ )
+        printf("%d ", a[i]);
+    return 0;
+}
