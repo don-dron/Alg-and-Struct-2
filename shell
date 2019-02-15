@@ -1,0 +1,24 @@
+void shellsort(unsigned long nel,int (*compare)(unsigned long i, unsigned long j),void (*swap)(unsigned long i, unsigned long j)){
+        int j,l,b[100],i,n;
+        b[0]=1;
+        b[1]=1;
+        i=1;
+        while(b[i]<nel) {
+            i++;
+            b[i]=b[i-1]+b[i-2];
+        }
+        n=i-1;
+        while(n>=1) {
+            for(j=0;j+b[n]<nel;j++) {
+                l=j;
+                i=j+b[n];
+                while (l>=0 && compare(l,i)==1) {
+                    swap(i,l);
+                    l=l-b[n];
+                    i=i-b[n];
+                }
+
+            }
+            n--;
+        }
+}
