@@ -1,0 +1,54 @@
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+
+int *prefix(char *s){
+    int n=strlen(s);
+    int *a=malloc(sizeof(int)*n);
+    a[0]=0;
+    int t=0;
+    int i=1;
+    while(i<n){
+        while(t>0 && s[t]!=s[i]){
+            t=a[t-1];
+        }
+        if(s[t]==s[i]){
+            t++;
+        }
+        a[i]=t;
+        i++;
+    }
+    return a;
+}
+void kmp (char *s, char *t){
+    int n=strlen(s);
+    int p=strlen(t);
+    int *a=prefix(s);
+    int q=0;
+    int k=0;
+    while(k<p){
+        while(q>0 && s[q]!=t[k]){
+            q=a[q-1];
+        }
+        if (s[q]==t[k]){
+            q++;
+        }
+        if(q==n){
+            printf("%d ", k-n+1);
+        }
+        k++;
+    }
+    free(a);
+}
+int main(int argc, char* argv[]){
+    int n;
+    int k;
+    char c[1000];
+    strcpy(c,argv[1]);
+    char s[1000];
+    //gets(c);
+    //gets(s);
+    strcpy(s,argv[2]);
+    kmp(c,s);
+    return 0;
+}
