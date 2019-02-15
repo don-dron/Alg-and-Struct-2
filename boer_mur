@@ -1,0 +1,97 @@
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+const int size=26;
+void delta1(char *s, int *d){
+    int a=0;
+    int n=strlen(s);
+    while(a<size){
+        d[a]=n;
+        a++;
+    }
+    int j=0;
+    while(j<strlen(s)){
+        d[s[j]-97]=n-j-1;
+        j++;
+    }
+}
+int max(int a, int b){
+    if(a<b)return b;
+    return a;
+}
+void suffix ( char *s, int *r){
+    int n=strlen(s);
+    r[n-1]=n-1;
+    int t=n-1;
+    int i=n-2;
+    while(i>=0){
+        while(t<n-1 && s[t]!=s[i]){
+            t=r[t+1];
+        }
+        if(s[t]==s[i]){
+            t--;
+        }
+        r[i]=t;
+        i--;
+    }
+}
+void delta2(char *s, int *k){
+    int r[size];
+    int n=strlen(s);
+    for(int i=0;i<n;i++)
+        r[i]=i+1;
+    suffix(s,r);
+    int i=0;
+    int t=r[0];
+    while(i<n){
+        while(t<i){
+            t=r[t+1];
+        }
+        k[i]=t-i+n;
+        i++;
+    }
+    i=0;
+    while(i<n-1){
+        t=i;
+        while(t<n-1){
+            t=r[t+1];
+            if(s[i]!=s[t]){
+                k[t]=n-i-1;
+            }
+        }
+        i++;
+    }
+}
+void simple(char *s, char *T){
+    int r[strlen(s)];
+    int k[strlen(s)];
+    int d[size];
+    delta1(s,d);
+    delta2(s,k);
+    int n=strlen(s);
+    int o=strlen(T);
+    int y=n-1;
+    while(y < o){
+        int i=n-1;
+        while( T[y]==s[i]){
+            if (i==0){
+                
+                printf("%d ",  y);
+                break;
+            }
+            i--;
+            y--;
+        }
+        if(i!=0)y=y+max(d[T[y]-97],k[i]);
+        else y=y+n;
+    }
+}
+int main (int argc, char ** argv){
+    //char s[1000];
+    //char T[1000];
+    simple(argv[1], argv[2]);
+    //scanf("%s " , s);
+    //scanf("%s", T);
+    //simple(s,T);
+    return 0;
+}
